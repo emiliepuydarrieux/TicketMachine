@@ -2,6 +2,7 @@ package ticketmachine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,11 +54,73 @@ class TicketMachineTest {
 	@Test
 	// S5 : Quand on imprime un ticket la balance est décrémentée du prix du ticket
 	void decrBalance(){
-		machine.insertMoney(50);
-		if (machine.getBalance()>machine.getPrice()){
-			float du=machine.getBalance()-machine.getPrice();
+		machine.insertMoney(PRICE+20);
+		machine.printTicket();
+		assertEquals(20, machine.getBalance(), "La balance n'est pas correctement décrémentée");
 		}
-		assertTrue(machine.printTicket(),"Le montant est suffisant pour imprimer le ticket");
-	}
 
-}
+	@Test
+	// S6 : Quand on imprime un ticket le total est incrémenté
+	void incrBalance(){
+		machine.insertMoney(PRICE+20);
+		machine.printTicket();
+		assertEquals(PRICE, machine.getTotal(), "La total n'est pas bien incrémenté");
+		}
+
+	@Test
+	// S7 : Quand on n'imprime pas le ticket le total ne change pas
+	void noChangesIfNotPrinted(){
+		machine.insertMoney(PRICE-20);
+		machine.printTicket();
+		assertEquals(0, machine.getTotal(), "Le total ne doit pas changer tant que le ticket n'est pas imprimé");
+		}
+
+	@Test
+	// S8 : 
+	void refund(){
+		machine.insertMoney(50);
+		int refund=machine.refund();
+		assertEquals(50, refund, "Le montant remboursé est incoorect");
+		assertEquals(0, machine.getBalance(), "La balance doit être remise à zéro après remboursement");
+		}
+
+	@Test
+	// S9 : 
+	void noNegativeMoney(){
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,() -> {
+			machine.insertMoney(0);
+		});
+		machine.insertMoney(50);
+		assertEquals("Le montant doit être positif", exception.getMessage());
+
+		exception = assertThrows(IllegalArgumentException.class, () -> {
+			machine.insertMoney(-10);
+		});
+		assertEquals("Le montant doit être positif", exception.getMessage());
+		}
+
+
+	@Test
+	// S9 : 
+	void noNegativePrice(){
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,() -> {
+			new TicketMachine(0);
+		});
+		assertEquals("Ticket price must be positive", exception.getMessage());
+
+		exception = assertThrows(IllegalArgumentException.class, () -> {
+			new TicketMachine(-10);
+		});
+		assertEquals("Ticket price must be positive", exception.getMessage());
+		}
+
+	
+
+
+
+		}
+	
+
+	
+
+
