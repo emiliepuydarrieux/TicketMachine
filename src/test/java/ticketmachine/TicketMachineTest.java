@@ -60,7 +60,7 @@ class TicketMachineTest {
 		}
 
 	@Test
-	// S6 : Quand on imprime un ticket le total est incrémenté
+	// S6 : Le montant collecté est mis à jour quand on imprime un ticket
 	void incrBalance(){
 		machine.insertMoney(PRICE+20);
 		machine.printTicket();
@@ -68,7 +68,7 @@ class TicketMachineTest {
 		}
 
 	@Test
-	// S7 : Quand on n'imprime pas le ticket le total ne change pas
+	// S6bis : Quand on n'imprime pas le ticket le total ne change pas
 	void noChangesIfNotPrinted(){
 		machine.insertMoney(PRICE-20);
 		machine.printTicket();
@@ -76,7 +76,7 @@ class TicketMachineTest {
 		}
 
 	@Test
-	// S8 : 
+	// S7 et S8 : rendre correctement la monnaie et remet la balance à zéro
 	void refund(){
 		machine.insertMoney(50);
 		int refund=machine.refund();
@@ -85,7 +85,7 @@ class TicketMachineTest {
 		}
 
 	@Test
-	// S9 : 
+	// S9 : On ne peut pas insérer de montant négatif ou nul
 	void noNegativeMoney(){
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,() -> {
 			machine.insertMoney(0);
@@ -101,7 +101,7 @@ class TicketMachineTest {
 
 
 	@Test
-	// S9 : 
+	// S10 : Le prix du ticket doit être positif
 	void noNegativePrice(){
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,() -> {
 			new TicketMachine(0);
